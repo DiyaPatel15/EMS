@@ -8,9 +8,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.contrib.auth import authenticate, login,logout
 from rest_framework_simplejwt.tokens import RefreshToken
-# from rest_framework.decorators import api_view
-# from django.http import HttpResponse
-# import qrcode
+from rest_framework.decorators import api_view
+from django.http import HttpResponse
+import qrcode
 
 
 
@@ -151,45 +151,45 @@ class UserPasswordResetView(APIView):
             return Response({'message': "Password Reset Successfully"})
         return Response(serializer.errors)
 
-# @api_view(['GET'])
-# def generate_qr_code(request):
-#     try:
-#         # Assuming you have only one employee for simplicity
-#         employee = Employee.objects.get(id=4)
-#
-#         # Generate QR code data based on employee ID
-#         qr_code_data = f"employee_id:{employee.id}"
-#
-#         # Generate QR code
-#         qr = qrcode.QRCode(
-#             version=1,
-#             error_correction=qrcode.constants.ERROR_CORRECT_L,
-#             box_size=10,
-#             border=4,
-#         )
-#         qr.add_data(qr_code_data)
-#         qr.make(fit=True)
-#
-#         img = qr.make_image(fill_color="black", back_color="white")
-#         response = HttpResponse(content_type="image/png")
-#         img.save(response, "PNG")
-#         return response
-#
-#     except Employee.DoesNotExist:
-#         return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
-#
-#
-# @api_view(['POST'])
-# def scan_qr_code(request):
-#     try:
-#         qr_code_data = request.data.get('qr_code_data')
-#         employee_id = int(qr_code_data.split(":")[1])
-#
-#         employee = Employee.objects.get(id=employee_id)
-#         employee.status = not employee.status
-#         employee.save()
-#
-#         return Response({"message": "Status updated successfully", "id": employee_id}, status=status.HTTP_200_OK)
-#
-#     except (Employee.DoesNotExist, ValueError):
-#         return Response({"error": "Invalid QR code data or Employee not exist"}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+def generate_qr_code(request):
+    try:
+        # Assuming you have only one employee for simplicity
+        employee = Employee.objects.get(id=4)
+
+        # Generate QR code data based on employee ID
+        qr_code_data = f"employee_id:{employee.id}"
+
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(qr_code_data)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
+        return response
+
+    except Employee.DoesNotExist:
+        return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def scan_qr_code(request):
+    try:
+        qr_code_data = request.data.get('qr_code_data')
+        employee_id = int(qr_code_data.split(":")[1])
+
+        employee = Employee.objects.get(id=employee_id)
+        employee.status = not employee.status
+        employee.save()
+
+        return Response({"message": "Status updated successfully", "id": employee_id}, status=status.HTTP_200_OK)
+
+    except (Employee.DoesNotExist, ValueError):
+        return Response({"error": "Invalid QR code data or Employee not exist"}, status=status.HTTP_400_BAD_REQUEST)
