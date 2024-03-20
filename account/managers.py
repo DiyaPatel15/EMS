@@ -8,14 +8,13 @@ class UserBaseManager(BaseUserManager):
         if not emp_email:
             raise ValueError("Email is Required")
         user = self.model(emp_id=emp_id, emp_name=emp_name, emp_email=emp_email,emp_contact=emp_contact,emp_address=emp_address,emp_profile=emp_profile, emp_designation=emp_designation, emp_role=emp_role,
-                          emp_company=emp_company, is_active=is_active, **extra_fields)
+                          emp_company=emp_company, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, emp_id, emp_name, emp_email,emp_contact,emp_address,emp_profile, emp_designation, emp_role,
-                         emp_company,
-                         is_active, password=None, **extra_fields):
+                         emp_company, password=None, **extra_fields):
         extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_staff', True)
 
@@ -25,4 +24,4 @@ class UserBaseManager(BaseUserManager):
             raise ValueError("is_superuser must be true")
 
         return self.create_user(emp_id, emp_name, emp_email,emp_contact, emp_address,emp_profile, emp_designation, emp_role,
-                                emp_company, is_active, password=password, **extra_fields)
+                                emp_company, password=password, **extra_fields)

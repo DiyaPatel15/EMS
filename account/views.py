@@ -1,17 +1,21 @@
 from django.shortcuts import render
-from .models import Employee
-from .serializers import EmployeeSerializer, EmployeeRegistrationSerializer, EmployeeLoginSerializer,EmployeeProfileSerializer,EmployeeChangePasswordSerializer,UserPasswordResetSerializer,SendPasswordResetSerializer
+from .models import Employee, Issue_Ticket, Holiday, Employee_Task,In_Out
+from .serializers import (EmployeeSerializer, EmployeeRegistrationSerializer, EmployeeLoginSerializer,In_Out_serializer,
+                          EmployeeProfileSerializer, EmployeeChangePasswordSerializer, UserPasswordResetSerializer,
+                          SendPasswordResetSerializer, IssueTicketSerializer, HolidaySerializer, EmployeeTaskSerializer)
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated,AllowAny
-from django.contrib.auth import authenticate, login,logout
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth import authenticate, login, logout
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
-from django.http import HttpResponse
-import qrcode
+from django.http import HttpResponse, JsonResponse
+from rest_framework.filters import SearchFilter
+from rest_framework import filters
 
+import qrcode
 
 
 def get_tokens_for_user(user):
@@ -26,6 +30,11 @@ def get_tokens_for_user(user):
 class EmployeeViewSet(ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+
+class EmployeeTaskViewSet(ModelViewSet):
+    queryset = Employee_Task.objects.all()
+    serializer_class = EmployeeTaskSerializer
 
 
 class EmployeeRegistrationView(APIView):
@@ -68,6 +77,7 @@ class TokenRefreshView(APIView):
             return Response({"access": new_access_token}, status=status.HTTP_200_OK)
         except:
             return Response({"error": "Invalid Data"})
+
 
 class EmployeeLogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -129,8 +139,6 @@ class EmployeeChangePasswordView(APIView):
             return Response({"error": "Unexpected Error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class SendPasswordResetEmailView(APIView):
     permission_classes = [AllowAny]
 
@@ -151,11 +159,12 @@ class UserPasswordResetView(APIView):
             return Response({'message': "Password Reset Successfully"})
         return Response(serializer.errors)
 
+
 @api_view(['GET'])
 def generate_qr_code(request):
     try:
         # Assuming you have only one employee for simplicity
-        employee = Employee.objects.get(id=4)
+        employee = Employee.objects.get(id=15)
 
         # Generate QR code data based on employee ID
         qr_code_data = f"employee_id:{employee.id}"
@@ -193,3 +202,61 @@ def scan_qr_code(request):
 
     except (Employee.DoesNotExist, ValueError):
         return Response({"error": "Invalid QR code data or Employee not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IssueTicketViewSet(ModelViewSet):
+    serializer_class = IssueTicketSerializer
+    queryset = Issue_Ticket.objects.all()
+
+
+class holidayViewSet(ModelViewSet):
+    serializer_class = HolidaySerializer
+    queryset = Holiday.objects.all()
+
+class inoutViewSet(ModelViewSet):
+    serializer_class = In_Out_serializer
+    queryset = In_Out.objects.all()
+
+def home(request):
+    return render(request, 'account/authentication.html')
+
+
+def issue_ticket(request):
+    return render(request, 'account/issue_ticket.html')
+
+
+def forgot(request):
+    return render(request, 'account/forgot.html')
+
+
+def changepassword(request):
+    return render(request, 'account/changepassword.html')
+
+
+def dashboard(request):
+    return render(request, 'account/dashboard.html')
+
+
+def employee_list(request):
+    return render(request, 'account/employee_list.html')
+
+
+def holidayView(request):
+    form = Holiday.objects.all()
+    print(form)
+    return render(request, 'account/holidays.html', {'form': form})
+
+
+def update_holidayView(request, pk):
+    return render(request, 'account/holiday_update.html', {'pk': pk})
+
+
+def holiday_add_view(request):
+    return render(request, 'account/holiday_add.html')
+
+
+def employee_task_View(request):
+    return render(request, 'account/employee_task.html')
+
+def inout_view(request):
+    return render(request,'account/in-out.html')

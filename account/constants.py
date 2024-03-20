@@ -32,3 +32,34 @@ EMPLOYEE_COMPANY = (
     ("PranshTech Solutions", "PranshTech Solutions"),
     ("Textdrip", "Textdrip"),
 )
+
+E_MENTOR=(
+    ("Harsh Modi","Harsh Modi"),
+    ("Kishan Patel","Kishan Patel"),
+    ("Rahul Patel","Rahul Patel"),
+    ("Harsh Sompura","Harsh Sompura"),
+    ("Dhaval Gajjar","Dhaval Gajjar"),
+    ("Vishal Tanna","Vishal Tanna"),
+    ("Aakanksha Neliwer","Aakanksha Neliwer"),
+    ("Bansari Goswami","Bansari Goswami"),
+    ("Sandeep Makvana","Sandeep Makvana"),
+
+)
+
+E_PRIORITY=(
+    ("Low","Low"),
+    ("Medium","Medium"),
+    ("High","High"),
+    ("Urgent","Urgent"),
+)
+
+IN_OUT=(
+    ("In","In"),
+    ("Out","Out"),
+)
+
+APPROVEL_STATUS=(
+    ("Accepted","Accepted"),
+    ("Rejected","Rejected"),
+    ("Pending","Pending")
+)

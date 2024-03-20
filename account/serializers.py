@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Employee
+from .models import Employee,Issue_Ticket,Holiday,Employee_Task,In_Out
 from rest_framework import serializers
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -12,6 +12,12 @@ class EmployeeSerializer(ModelSerializer):
     class Meta:
         model = Employee
         fields = "__all__"
+
+class RelativeImageField(serializers.ImageField):
+    def to_representation(self, value):
+        if value:
+            return value.url
+        return None
 
 
 class EmployeeRegistrationSerializer(ModelSerializer):
@@ -120,10 +126,28 @@ class UserPasswordResetSerializer(serializers.Serializer):
             raise serializers.ValidationError("Token is not valid or expired")
 
 
+class IssueTicketSerializer(ModelSerializer):
+    class Meta:
+        model = Issue_Ticket
+        fields = ['ticket_email', 'ticket_issue']
+
+class HolidaySerializer(ModelSerializer):
+    class Meta:
+        model= Holiday
+        fields = ['id', 'holiday_date', 'holiday_name', 'holiday_day']
 
 
 
+class EmployeeTaskSerializer(ModelSerializer):
+    class Meta:
+        model = Employee_Task
+        fields = ['E_name', 'E_Card_Link', 'E_Assign_Date', 'E_Mentor', 'E_Priority']
 
+
+class In_Out_serializer(ModelSerializer):
+    class Meta:
+        model = In_Out
+        fields = '__all__'
 
 
 
